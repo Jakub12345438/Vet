@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en">
+<head>
+    <title>Visit search</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #00c6ff, #0072ff); /* Nowoczesny gradient */
+            font-family: 'Arial', sans-serif;
+            color: #333;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px;
+            background-color: #11ff00; /* Zmieniony kolor nagłówka */
+            color: white;
+            width: 100%;
+        }
+
+        header img {
+            max-width: 100px; /* Maksymalna szerokość obrazka */
+            height: auto;
+            margin-bottom: 20px; /* Dystans między obrazkiem a tytułem */
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            color: #fff;
+        }
+
+        nav {
+            width: 100%;
+            padding: 10px 0;
+        }
+
+        .navbar-brand {
+            font-size: 18px;
+            padding: 10px 15px;
+            text-decoration: none;
+            color: #fff;
+        }
+
+        .navbar-brand:hover {
+            color: #f0f0f0;
+        }
+
+        .button-container button {
+            margin: 10px;
+            padding: 12px 25px;
+            background-color: #fdb601;
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+
+        .button-container button:hover {
+            background-color: #ff9800;
+            transform: scale(1.05);
+        }
+
+        .button-container a {
+            color: white;
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+        }
+
+            .button-container button {
+                width: 90%;
+            }
+
+            table {
+                border-collapse: collapse;
+                width: 100%;
+            }
+
+            table thead {
+                background-color: #00b309 !important;
+                color: white !important;
+            }
+
+            table tbody tr:nth-child(odd) {
+                background-color: #f2f2f2 !important;
+            }
+
+            table tbody tr:nth-child(even) {
+                background-color: #ffffff !important;
+            }
+
+            table tbody tr:hover {
+                background-color: #fdb601 !important;
+            }
+
+            table th, table td {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: center;
+            }
+
+            h2
+            {
+                text-align: center;
+            }
+
+        </style>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pl.js"></script>
+</head>
+<body style="background-color: green;">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <!-- Wspólny link do strony głównej -->
+        <a class="navbar-brand" th:href="@{/index}">Strona główna</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Rozwijane menu nawigacyjne -->
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <!-- Linki widoczne dla anonimowych użytkowników -->
+                <li class="nav-item" sec:authorize="isAnonymous()">
+                    <a class="nav-link" th:href="@{/info}">O nas</a>
+                </li>
+
+                <!-- Linki widoczne dla administratorów -->
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link" th:href="@{/admin}">Zarządzaj wizytami</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link" th:href="@{/users}">Zarządzaj użytkownikami</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link" th:href="@{/holidays}">Dodaj urlop</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link" th:href="@{/holidays-vets}">Urlopy</a>
+                </li>
+
+                <li class="nav-item" sec:authorize="hasRole('DOCTOR')">
+                    <a class="nav-link" th:href="@{/vet}">Zarządzaj wizytami</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('DOCTOR')">
+                    <a class="nav-link" th:href="@{/visits-vet}">Kalendarz wizyt</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('DOCTOR')">
+                    <a class="nav-link" th:href="@{/vet-holidays}">Moje urlopy</a>
+                </li>
+
+                <!-- Linki widoczne dla zwykłych użytkowników -->
+                <li class="nav-item" sec:authorize="hasRole('USER')">
+                    <a class="nav-link" th:href="@{/info}">O nas</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('USER') && !hasRole('DOCTOR') && !hasRole('ADMIN')">
+                    <a class="nav-link" th:href="@{/user-visits}">Moje wizyty</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('USER') && !hasRole('DOCTOR') && !hasRole('ADMIN')">
+                    <a class="nav-link" th:href="@{/visit}">Umów wizytę</a>
+                </li>
+
+                <!-- Link do wylogowania widoczny tylko dla zalogowanych użytkowników -->
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a class="nav-link" th:href="@{/logout}">Wyloguj się</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<h1>Wyszukiwarka wizyt</h1>
+
+<form class="container mt-4" id="searchVisitForm" th:action="@{/search}" th:object="${searchForm}" method="post">
+    <div class="row mb-3">
+        <label for="vet" class="col-sm-2 col-form-label">Lekarz:</label>
+        <div class="col-sm-10">
+            <select id="vet" name="vet" th:field="*{vet}" class="form-select" required>
+                <option th:each="vet : ${doctors}"
+                        th:value="${vet.userID}"
+                        th:text="${vet.name + ' ' + vet.surname}"></option>
+            </select>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label for="localDateTime" class="col-sm-2 col-form-label">Data i godzina:</label>
+        <div class="col-sm-10">
+            <input type="datetime-local" id="localDateTime" th:field="*{localDateTime}" class="form-control" required>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-danger">Szukaj</button>
+</form>
+
+<div th:if="${searchPerformed}">
+    <div th:if="${not #lists.isEmpty(allVisits)}">
+        <h2>Wizyty:</h2>
+        <table class="table table-striped table-hover">
+            <thead class="thead-dark">
+            <tr>
+                <th>Imię klienta</th>
+                <th>Nazwisko klienta</th>
+                <th>Imię zwierzęcia</th>
+                <th>Zwierzę</th>
+                <th>Płeć</th>
+                <th>Lekarz</th>
+                <th>Data i godzina</th>
+                <th>Przyczyna wizyty</th>
+                <th>Numer telefonu klienta</th>
+                <th>Numer telefonu weterynarza</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="visit, stat : ${allVisits}">
+                <td th:text="${visit?.userModel.name}"></td>
+                <td th:text="${visit?.userModel.surname}"></td>
+                <td th:text="${visit?.animalName}"></td>
+                <td th:text="${visit?.animal}"></td>
+                <td th:text="${visit?.gender}"></td>
+                <td th:text="${visit?.vet.getFullName()}"></td>
+                <td th:text="${formattedDateTimes[stat.index]}"></td>
+                <td th:text="${visit?.description}"></td>
+                <td th:text="${visit?.userModel.phoneNumber}"></td>
+                <td th:text="${visit?.vet.phoneNumber}"></td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+    <div th:if="${#lists.isEmpty(allVisits)}">
+        <h3>Brak wizyty w tym terminie!</h3>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js"></script>
+<script>
+    setTimeout(function() {
+        window.location.href = '/logout';
+    }, 300000); // Wylogowanie za 5 minut
+</script>
+</body>
+</html>

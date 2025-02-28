@@ -1,0 +1,2 @@
+# Przychodnia
+Aplikacja dla przychodni
