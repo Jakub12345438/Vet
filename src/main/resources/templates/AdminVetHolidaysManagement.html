@@ -139,7 +139,7 @@
 </nav>
 <div class="form-container">
     <h1>Dodaj termin urlopu dla weterynarza</h1>
-    <form th:action="@{/holidays}" id="addHolidayForm" th:object="${holiday}" method="post">
+    <form th:action="@{/holidays/add}" id="addHolidayForm" th:object="${holiday}" method="post">
         <!-- Wybór lekarza -->
         <label for="vet">Wybierz lekarza:</label>
         <select id="vet" name="vet" th:field="*{vet}" required>

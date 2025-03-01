@@ -34,7 +34,7 @@ public class HolidayController {
         return "AdminVetHolidaysManagement";
     }
 
-    @PostMapping("/holidays")
+    @PostMapping("/holidays/add")
     public String addHoliday(@ModelAttribute("holiday") Holiday holiday) {
             holidayService.addHoliday(holiday);
             return "redirect:/holidays";
