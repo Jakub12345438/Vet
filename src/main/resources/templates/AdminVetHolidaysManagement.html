@@ -139,23 +139,23 @@
 </nav>
 <div class="form-container">
     <h1>Dodaj termin urlopu dla weterynarza</h1>
-<form th:action="@{/holidays/add}" id="addHolidayForm" th:object="${holiday}" method="post">
-    <!-- Wybór lekarza -->
-    <label for="vet">Wybierz lekarza:</label>
-    <select id="vet" name="vet" th:field="*{vet}" required>
-        <option th:each="vet : ${vets}"
-                th:value="${vet.userID}"
-                th:text="${vet.getFullName()}">
-        </option>
-    </select>
-    <br>
-    <!-- Data rozpoczęcia -->
-    <label for="start">Data urlopu:</label>
-    <input type="date" id="start" th:field="*{startDate}" readonly required>
-    <br>
-    <!-- Przycisk dodawania -->
-    <button type="submit" class="btn btn-primary">Dodaj urlop</button>
-</form>
+    <form th:action="@{/holidays}" id="addHolidayForm" th:object="${holiday}" method="post">
+        <!-- Wybór lekarza -->
+        <label for="vet">Wybierz lekarza:</label>
+        <select id="vet" name="vet" th:field="*{vet}" required>
+            <option th:each="vet : ${vets}"
+                    th:value="${vet.userID}"
+                    th:text="${vet.getFullName()}">
+            </option>
+        </select>
+        <br>
+        <!-- Data rozpoczęcia -->
+        <label for="start">Data urlopu:</label>
+        <input type="date" id="start" th:field="*{startDate}" readonly required>
+        <br>
+        <!-- Przycisk dodawania -->
+        <button type="submit" class="btn btn-primary">Dodaj urlop</button>
+    </form>
 </div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
@@ -164,6 +164,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
 
+        const formElement = document.getElementById("addHolidayForm"); // ID formularza
         const startElement = document.getElementById("start");
         const vetSelectElement = document.getElementById("vet"); // Pole wyboru lekarza
         let selectedVetId = vetSelectElement.value; // Domyślnie wybrany lekarz (pierwszy w liście)
@@ -289,17 +290,6 @@
             updateDisabledDates(startInstance, currentYear);
         });
 
-        // Inicjalizacja blokady dni dla bieżącego roku
-        const currentYear = new Date().getFullYear();
-        updateDisabledDates(startInstance, currentYear);
-    });
-
-</script>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const formElement = document.getElementById("addHolidayForm"); // ID formularza
-        const startElement = document.getElementById("start");
-
         // Dodanie walidacji na zdarzenie 'submit' formularza
         formElement.addEventListener("submit", function (event) {
             const datepickerValue = startElement.value.trim(); // Pobierz wartość pola
@@ -315,7 +305,12 @@
             }
 
         });
+
+        // Inicjalizacja blokady dni dla bieżącego roku
+        const currentYear = new Date().getFullYear();
+        updateDisabledDates(startInstance, currentYear);
     });
+
 </script>
 <script>
     setTimeout(function() {
