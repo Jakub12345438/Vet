@@ -164,7 +164,6 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
 
-        const formElement = document.getElementById("addHolidayForm"); // ID formularza
         const startElement = document.getElementById("start");
         const vetSelectElement = document.getElementById("vet"); // Pole wyboru lekarza
         let selectedVetId = vetSelectElement.value; // Domyślnie wybrany lekarz (pierwszy w liście)
@@ -290,6 +289,17 @@
             updateDisabledDates(startInstance, currentYear);
         });
 
+        // Inicjalizacja blokady dni dla bieżącego roku
+        const currentYear = new Date().getFullYear();
+        updateDisabledDates(startInstance, currentYear);
+    });
+
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const formElement = document.getElementById("addHolidayForm"); // ID formularza
+        const startElement = document.getElementById("start");
+
         // Dodanie walidacji na zdarzenie 'submit' formularza
         formElement.addEventListener("submit", function (event) {
             const datepickerValue = startElement.value.trim(); // Pobierz wartość pola
@@ -305,12 +315,7 @@
             }
 
         });
-
-        // Inicjalizacja blokady dni dla bieżącego roku
-        const currentYear = new Date().getFullYear();
-        updateDisabledDates(startInstance, currentYear);
     });
-
 </script>
 <script>
     setTimeout(function() {
