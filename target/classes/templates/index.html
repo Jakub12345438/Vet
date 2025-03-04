@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strona główna</title>
+    <style>
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            color: #333;
+            background: linear-gradient(120deg, #ff9a9e, #fad0c4, #fad0c4); /* Miękki pastelowy gradient */
+            background-size: 200% 200%;
+            animation: gradientAnimation 5s ease infinite; /* Płynna animacja gradientu */
+        }
+
+        /* Definicja animacji gradientu */
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0 50%;
+            }
+        }
+
+
+        header {
+            text-align: center;
+            padding: 20px;
+            background-color: #0072ff; /* Zmieniony kolor nagłówka */
+            color: white;
+            width: 100%;
+        }
+
+        header img {
+            max-width: 100px; /* Maksymalna szerokość obrazka */
+            height: auto;
+            margin-bottom: 20px; /* Dystans między obrazkiem a tytułem */
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            color: #fff;
+        }
+
+        nav {
+            width: 100%;
+            padding: 10px 0;
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .button-container button {
+            margin: 10px;
+            padding: 12px 25px;
+            background-color: #fdb601;
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+
+        .button-container button:hover {
+            background-color: #ff9800;
+            transform: scale(1.05);
+        }
+
+        .button-container a {
+            color: white;
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .button-container button {
+                width: 90%;
+            }
+        }
+    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+          crossorigin="anonymous">
+</head>
+<body style="background-color: green;">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <!-- Wspólny link do strony głównej -->
+        <a class="navbar-brand" th:href="@{/index}" hidden>Strona główna</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Rozwijane menu nawigacyjne -->
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <!-- Linki widoczne dla anonimowych użytkowników -->
+                <li class="nav-item" sec:authorize="isAnonymous()">
+                    <a class="nav-link" th:href="@{/info}">O nas</a>
+                </li>
+
+                <!-- Linki widoczne dla administratorów -->
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link" th:href="@{/admin}">Zarządzaj wizytami</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link" th:href="@{/search}">Wyszukaj wizytę</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link" th:href="@{/users}">Zarządzaj użytkownikami</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link" th:href="@{/holidays}">Dodaj urlop</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link" th:href="@{/holidays-vets}">Urlopy</a>
+                </li>
+
+                <li class="nav-item" sec:authorize="hasRole('DOCTOR')">
+                    <a class="nav-link" th:href="@{/vet}">Zarządzaj wizytami</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('DOCTOR')">
+                    <a class="nav-link" th:href="@{/visits-vet}">Kalendarz wizyt</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('DOCTOR')">
+                    <a class="nav-link" th:href="@{/vet-holidays}">Moje urlopy</a>
+                </li>
+
+                <!-- Linki widoczne dla zwykłych użytkowników -->
+                <li class="nav-item" sec:authorize="hasRole('USER')">
+                    <a class="nav-link" th:href="@{/info}">O nas</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('USER') && !hasRole('DOCTOR') && !hasRole('ADMIN')">
+                    <a class="nav-link" th:href="@{/user-visits}">Moje wizyty</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('USER') && !hasRole('DOCTOR') && !hasRole('ADMIN')">
+                    <a class="nav-link" th:href="@{/visit}">Umów wizytę</a>
+                </li>
+
+                <!-- Link do wylogowania widoczny tylko dla zalogowanych użytkowników -->
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a class="nav-link" th:href="@{/logout}">Wyloguj się</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<header>
+    <img src="/logo.png" alt="Logo Gabinetu Weterynaryjnego">
+    <h1>Gabinet weterynaryjny DoctorVet</h1>
+</header>
+<div class="button-container">
+    <a th:href="@{'/login'}" sec:authorize="isAnonymous()" class="btn btn-primary">Zaloguj się</a>
+    <a th:href="@{'/register'}" sec:authorize="isAnonymous()" class="btn btn-secondary">Zarejestruj się</a>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js"></script>
+<script>
+    setTimeout(function() {
+        window.location.href = '/logout';
+    }, 300000); // Wylogowanie za 5 minut
+</script>
+</body>
+</html>

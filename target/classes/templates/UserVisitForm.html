@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns="http://www.w3.org/1999/html" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Formularz pacjenta</title>
+    <style>
+        body {
+            background: linear-gradient(to bottom right, #0072ff, #00c6ff);
+            font-family: 'Roboto', sans-serif;
+            color: #fff;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .form-container {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .form-container h1 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .form-container label {
+            font-weight: 500;
+            color: #555;
+        }
+
+        .form-container input, .form-container select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .form-container input[type="submit"] {
+            background-color: #0072ff;
+            color: #fff;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+            text-transform: uppercase;
+            transition: background-color 0.3s ease;
+        }
+
+        .form-container input[type="submit"]:hover {
+            background-color: #005bb5;
+        }
+
+        .form-container {
+            color: #ff0000;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ff9100;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+            background-color: #fd0101;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #c600fd;
+        }
+
+        label {
+            display: inline-block; /* Ustawienie etykiety w tej samej linii co pole formularza */
+            margin-bottom: 5px; /* Dodatkowy margines na dole etykiety */
+            font-weight: bold; /* Pogrubienie tekstu etykiety */
+        }
+
+        input[type="text"], input, textarea, select {
+            margin-bottom: 15px; /* Dodatkowy odstęp pod polami formularza */
+            padding: 8px; /* Padding wewnętrzny dla wygodniejszego wpisywania */
+            width: 100%; /* Dostosowanie szerokości pól formularza */
+            box-sizing: border-box; /* Umożliwia szerokość obejmującą padding */
+        }
+    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pl.js"></script>
+
+</head>
+<body style="background-color: green;">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <!-- Wspólny link do strony głównej -->
+        <a class="navbar-brand" th:href="@{/index}">Strona główna</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Rozwijane menu nawigacyjne -->
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <!-- Linki widoczne dla anonimowych użytkowników -->
+                <li class="nav-item" sec:authorize="isAnonymous()">
+                    <a class="nav-link" th:href="@{/info}">O nas</a>
+                </li>
+
+                <!-- Linki widoczne dla administratorów -->
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link" th:href="@{/admin}">Zarządzaj wizytami</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link" th:href="@{/search}">Wyszukaj wizytę</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link" th:href="@{/users}">Zarządzaj użytkownikami</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link" th:href="@{/holidays}">Dodaj urlop</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link" th:href="@{/holidays-vets}">Urlopy</a>
+                </li>
+
+                <li class="nav-item" sec:authorize="hasRole('DOCTOR')">
+                    <a class="nav-link" th:href="@{/vet}">Zarządzaj wizytami</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('DOCTOR')">
+                    <a class="nav-link" th:href="@{/visits-vet}">Kalendarz wizyt</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('DOCTOR')">
+                    <a class="nav-link" th:href="@{/vet-holidays}">Moje urlopy</a>
+                </li>
+
+                <!-- Linki widoczne dla zwykłych użytkowników -->
+                <li class="nav-item" sec:authorize="hasRole('USER')">
+                    <a class="nav-link" th:href="@{/info}">O nas</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('USER') && !hasRole('DOCTOR') && !hasRole('ADMIN')">
+                    <a class="nav-link" th:href="@{/user-visits}">Moje wizyty</a>
+                </li>
+
+                <!-- Link do wylogowania widoczny tylko dla zalogowanych użytkowników -->
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a class="nav-link" th:href="@{/logout}">Wyloguj się</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="form-container">
+    <h1>Umów wizytę</h1>
+            <form id="addVisitForm" th:action="@{/visit}" th:object="${newPatient}" method="post">
+                <label for="animalName">Imię zwierzęcia:</label>
+                <input type="text" id="animalName" th:field="*{animalName}" required/>
+                <br>
+                <label for="animal">Wybierz zwierzę:</label>
+                <select id="animal" name="animal" th:field="*{animal}" required>
+                    <option th:each="animal : ${T(przychodnia.models.Animal).values()}"
+                            th:value="${animal}"
+                            th:text="${animal}"></option>
+                </select>
+                <br>
+                <label for="gender">Wybierz płeć:</label>
+                <select id="gender" name="gender" th:field="*{gender}" required>
+                    <option th:each="gender : ${T(przychodnia.models.Gender).values()}"
+                            th:value="${gender}"
+                            th:text="${gender}"></option>
+                </select>
+                <br>
+                <label for="vet">Wybierz lekarza:</label>
+                <select id="vet" name="vet" th:field="*{vet}" required>
+                    <option th:each="vet : ${vets}"
+                            th:value="${vet.userID}"
+                            th:text="${vet.getFullName()}"></option>
+                </select>
+                <br>
+                <label for="datepicker">Data i godzina:</label>
+                    <input type="datetime-local" id="datepicker" th:field="*{dateTime}" readonly required/>
+                <br>
+                <label for="description">Powód wizyty:</label>
+                <textarea type="text" id="description" th:field="*{description}" rows="4" cols="50" required></textarea>
+                <br>
+                <p><input type="submit" value="Dodaj wizytę"/></p><br>
+            </form>
+        </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let clientNameInput = document.getElementById("clientName");
+
+        clientNameInput.addEventListener("input", function () {
+            let clientNameValue = clientNameInput.value;
+            let clientNamePattern = /^[A-Z][a-zA-Z]+$/; // Duża litera na początku, co najmniej 2 litery
+
+            if (clientNamePattern.test(clientNameValue)) {
+                clientNameInput.setCustomValidity("");
+            } else {
+                clientNameInput.setCustomValidity("Imię klienta musi się zaczynać dużą literą i składać co najmniej z 2 liter.");
+            }
+        });
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let clientSurnameInput = document.getElementById("clientSurname");
+
+        clientSurnameInput.addEventListener("input", function () {
+            let clientSurnameValue = clientSurnameInput.value;
+            let clientSurnamePattern = /^[A-Z][a-zA-Z]+$/; // Duża litera na początku, co najmniej 2 litery
+
+            if (clientSurnamePattern.test(clientSurnameValue)) {
+                clientSurnameInput.setCustomValidity("");
+            } else {
+                clientSurnameInput.setCustomValidity("Nazwisko klienta musi się zaczynać dużą literą i składać co najmniej z 2 liter.");
+            }
+        });
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let animalNameInput = document.getElementById("animalName");
+
+        animalNameInput.addEventListener("input", function () {
+            let animalNameValue =animalNameInput.value;
+            let animalNamePattern = /^[A-Z][a-zA-Z]+$/; // Duża litera na początku, co najmniej 2 litery
+
+            if (animalNamePattern.test(animalNameValue)) {
+                animalNameInput.setCustomValidity("");
+            } else {
+                animalNameInput.setCustomValidity("Imię zwierzęcia musi się zaczynać dużą literą i składać co najmniej z 2 liter.");
+            }
+        });
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let descriptionInput = document.getElementById("description");
+
+        descriptionInput.addEventListener("input", function () {
+            let descriptionValue = descriptionInput.value;
+            let descriptionPattern = /^[A-Z].{4,}$/; // Duża litera na początku, co najmniej 5 znaków
+
+            if (descriptionPattern.test(descriptionValue)) {
+                descriptionInput.setCustomValidity("");
+            } else {
+                descriptionInput.setCustomValidity("Opis musi się zaczynać dużą literą i składać co najmniej z 5 znaków.");
+            }
+        });
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let phoneNumberInput = document.getElementById("phoneNumber");
+
+        phoneNumberInput.addEventListener("input", function () {
+            let phoneNumberValue = phoneNumberInput.value;
+            let phoneNumberPattern = /^\d{9}$/; // Numer telefonu powinien składać się z 9 cyfr
+
+            if (phoneNumberPattern.test(phoneNumberValue)) {
+                phoneNumberInput.setCustomValidity("");
+            } else {
+                phoneNumberInput.setCustomValidity("Numer telefonu powinien składać się z 9 cyfr.");
+            }
+        });
+    });
+</script>
+<script>
+    setTimeout(function() {
+        window.location.href = '/logout';
+    }, 300000); // Wylogowanie za 5 minut
+</script>
+<script th:inline="javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+        const datepickerElement = document.getElementById("datepicker");
+        const formElement = document.getElementById("addVisitForm"); // ID Twojego formularza
+        const vetSelectElement = document.getElementById("vet"); // Pole wyboru lekarza
+        let selectedVetId = vetSelectElement.value; // Domyślnie wybrany lekarz (pierwszy w liście)
+
+        // Oblicz maksymalną datę (1 miesiąc w przyszłość od dziś)
+        const maxDate = new Date();
+        maxDate.setMonth(maxDate.getMonth() + 1);
+
+        // Funkcja zaokrąglająca minuty do najbliższego 00 lub 30
+        function roundToNearest30Minutes(date) {
+            const minutes = date.getMinutes();
+            if (minutes < 30) {
+                date.setMinutes(0);
+            } else if (minutes < 45) {
+                date.setMinutes(30);
+            } else {
+                date.setMinutes(0);
+                date.setHours(date.getHours() + 1);
+            }
+            date.setSeconds(0, 0); // Zerowanie sekund i milisekund
+            return date;
+        }
+
+        // Funkcja do pobierania świąt na podstawie roku
+        async function fetchHolidays(year) {
+            try {
+                const response = await fetch(`/api/holidays/${year}`);
+                const holidays = await response.json();
+                return holidays.map(date => new Date(date));
+            } catch (error) {
+                console.error(`Błąd podczas pobierania świąt dla roku ${year}:`, error);
+                return [];
+            }
+        }
+
+        // Funkcja do pobierania zablokowanych wizyt użytkownika
+        async function fetchUserVisits(userId, year) {
+            try {
+                const response = await fetch(`/api/user-visits/${userId}/${year}`);
+                const visits = await response.json();
+                return visits.map(dateStr => new Date(dateStr)); // Zamiana dat na obiekty Date
+            } catch (error) {
+                console.error(`Błąd podczas pobierania wizyt dla użytkownika ${userId} w roku ${year}:`, error);
+                return [];
+            }
+        }
+
+        // Funkcja do pobierania zajętych godzin dla weterynarza w danym dniu
+        async function fetchVetBusyTimes(vetId, date) {
+            try {
+                const dateStr = date.toISOString().split("T")[0]; // Format YYYY-MM-DD
+                const response = await fetch(`/api/vets/busy-times/${vetId}/${dateStr}`);
+                const busyTimes = await response.json(); // Oczekujemy np. ["10:00", "13:00", "15:30"]
+                return busyTimes;
+            } catch (error) {
+                console.error(`Błąd podczas pobierania zajętych godzin dla weterynarza ${vetId}:`, error);
+                return [];
+            }
+        }
+
+        // Funkcja do pobierania dat urlopów dla weterynarza
+        async function fetchVetHolidays(vetId) {
+            try {
+                const response = await fetch(`/api/vets/holidays/${vetId}`);
+                const vetHolidays = await response.json();
+                // Konwersja stringów na obiekty Date
+                return vetHolidays.map(date => {
+                    const [day, month, year] = date.split('.').map(Number);
+                    return new Date(year, month - 1, day); // Miesiące w Date są zero-indexed
+                });
+            } catch (error) {
+                console.error(`Błąd podczas pobierania urlopów dla weterynarza ${vetId}:`, error);
+                return [];
+            }
+        }
+
+
+        // Funkcja aktualizująca blokowanie dni w kalendarzu
+        async function updateDisabledDates(instance, userId, year) {
+            instance.input.disabled = true; // Wyłącz interakcję z kalendarzem
+
+            const holidays = await fetchHolidays(year); // Pobranie świąt
+            const userVisits = await fetchUserVisits(userId, year); // Pobranie wizyt użytkownika
+            const vetHolidays = await fetchVetHolidays(selectedVetId); // Pobranie urlopów weterynarza
+
+            console.log(`Pobrane święta dla roku ${year}:`, holidays);
+            console.log(`Pobrane wizyty dla użytkownika ${userId}:`, userVisits);
+            console.log(`Pobrane urlopy dla użytkownika ${selectedVetId}:`, vetHolidays);
+
+            // Połączone daty blokowane (święta + wizyty)
+            const allBlockedDates = [...holidays, ...userVisits, ...vetHolidays];
+
+            instance.set("disable", [
+                function (date) {
+                    const day = date.getDay();
+                    const visibleMonth = instance.currentMonth;
+                    const visibleYear = instance.currentYear;
+
+                    // Blokuj dni spoza aktualnie wyświetlanego miesiąca
+                    if (date.getMonth() !== visibleMonth || date.getFullYear() !== visibleYear || day === 0) {
+                        return true;
+                    }
+
+                    // Blokuj święta, wizyty użytkownika i urlopy weterynarza
+                    return allBlockedDates.some(blockedDate => blockedDate.toDateString() === date.toDateString());
+                },
+            ]);
+
+            instance.redraw(); // Odśwież widok kalendarza
+            instance.input.disabled = false; // Włącz interakcję po zakończeniu
+        }
+
+        async function findNextAvailableDate(blockedDates) {
+            const today = new Date();
+            let nextDate = new Date(today);
+            nextDate.setDate(nextDate.getDate() + 1); // Zaczynamy od jutra
+
+            // Szukaj, dopóki data nie będzie dostępna
+            while (blockedDates.some(blocked => blocked.toDateString() === nextDate.toDateString()) || nextDate.getDay() === 0) {
+                nextDate.setDate(nextDate.getDate() + 1);
+            }
+
+            return roundToNearest30Minutes(nextDate); // Zapewnienie poprawnych minut
+        }
+
+        // Inicjalizacja kalendarza
+        const flatpickrInstance = flatpickr(datepickerElement, {
+            locale: "pl",
+            enableTime: true,
+            dateFormat: "d.m.Y H:i",
+            minDate: new Date().fp_incr(1), // Blokada przeszłych i teraźniejszych dat
+            maxDate: maxDate, // Blokada dat powyżej 1 roku od dziś
+            time_24hr: true,
+            minuteIncrement: 30, // Ustawiamy 1, aby użytkownik mógł wybrać dowolną minutę
+            minTime: "10:00",
+            maxTime: "12:30",
+            disableMobile: true,
+            allowInput: false, // Blokada ręcznego wpisywania
+            onReady: async function (selectedDates, dateStr, instance) {
+
+                // Blokowanie wpisywania w polach wewnętrznych Flatpickr (czas + rok)
+                const inputsToBlock = instance.calendarContainer.querySelectorAll(".flatpickr-time input, .numInput.cur-year");
+                inputsToBlock.forEach(input => {
+                    input.setAttribute("readonly", "readonly"); // Ustaw pole jako tylko do odczytu
+                });
+
+                // Zainicjalizuj blokowanie dni dla aktualnego miesiąca i roku
+                const currentYear = instance.currentYear;
+
+                // Pobierz zablokowane daty
+                const holidays = await fetchHolidays(currentYear);
+                const userVisits = await fetchUserVisits(userId, currentYear);
+                const vetHolidays = await fetchVetHolidays(selectedVetId);
+
+                const blockedDates = [...holidays, ...userVisits, ...vetHolidays];
+
+                // Oblicz najbliższą dostępną datę
+                const nextAvailableDate = await findNextAvailableDate(blockedDates);
+
+                // Ustaw minimalną datę
+                instance.set("minDate", nextAvailableDate);
+
+                // Wymuś domyślną godzinę na najbliższą dostępną z minutami 00 lub 30
+                const defaultTime = new Date();
+                defaultTime.setHours(10, 0, 0, 0); // Start o 10:00 z minutami 00
+
+                // Ustawienie początkowego czasu na kalendarzu
+                instance.setDate(defaultTime);
+
+                await fetchHolidays(currentYear);
+                await updateDisabledDates(instance, userId, currentYear);
+
+            },
+            onChange: async function (selectedDates, dateStr, instance) {
+
+                if (selectedDates.length > 0) {
+                    const selectedDate = selectedDates[0];
+                    let hours = selectedDate.getHours();
+                    let minutes = selectedDate.getMinutes();
+                    let day = selectedDate.getDay();
+
+                    // Aktualizacja godzin pracy w zależności od dnia tygodnia
+                    if (day >= 1 && day <= 5) {
+                        instance.set("minTime", "10:00");
+                        instance.set("maxTime", "17:30");
+                    } else if (day === 6) {
+                        instance.set("minTime", "10:00");
+                        instance.set("maxTime", "12:30");
+                    }
+
+                    instance.set("minuteIncrement", 30);
+
+                    // Sprawdzanie zajętych godzin na podstawie wybranego lekarza
+                    const busyTimes = await fetchVetBusyTimes(selectedVetId, selectedDate);
+                    const selectedTime = `${hours < 10 ? '0' + hours : hours}:${minutes < 10 ? '0' + minutes : minutes}`;
+
+                    if (busyTimes.includes(selectedTime)) {
+                        alert(`Godzina ${selectedTime} jest zajęta dla wybranego lekarza. Proszę wybrać inną godzinę.`);
+                        instance.clear(); // Wyczyść wybraną datę
+                    }
+                }
+            },
+            onMonthChange: async function (selectedDates, dateStr, instance) {
+                const currentYear = instance.currentYear; // Aktualny widoczny rok
+                console.log(`Zmieniono miesiąc, aktualny rok to: ${currentYear}`);
+                await updateDisabledDates(instance, userId, currentYear);
+
+            },
+            onYearChange: async function (selectedDates, dateStr, instance) {
+                const currentYear = instance.currentYear; // Aktualny widoczny rok
+                console.log(`Zmieniono rok, aktualny rok to: ${currentYear}`);
+                await updateDisabledDates(instance, userId, currentYear);
+
+            },
+
+        });
+
+        // Zdarzenie zmiany lekarza weterynarii
+        vetSelectElement.addEventListener("change", async function () {
+            selectedVetId = vetSelectElement.value; // Zaktualizuj ID wybranego lekarza
+            console.log(`Wybrano nowego lekarza: ${selectedVetId}`);
+            // Pobierz zablokowane daty dla nowego lekarza
+            const holidays = await fetchHolidays(currentYear);
+            const userVisits = await fetchUserVisits(userId, currentYear);
+            const vetHolidays = await fetchVetHolidays(selectedVetId);
+
+            const blockedDates = [...holidays, ...userVisits, ...vetHolidays];
+
+            // Oblicz nową minimalną datę
+            const nextAvailableDate = await findNextAvailableDate(blockedDates);
+
+            // Zaktualizuj Flatpickr
+            flatpickrInstance.set("minDate", nextAvailableDate);
+            flatpickrInstance.clear(); // Wyczyść wybraną datę
+            await updateDisabledDates(flatpickrInstance, userId, currentYear);
+        });
+
+        // Dodanie walidacji na zdarzenie 'submit' formularza
+        formElement.addEventListener("submit", function (event) {
+            const datepickerValue = datepickerElement.value.trim(); // Pobierz wartość pola
+
+            // Sprawdzenie, czy pole jest puste
+            if (!datepickerValue) {
+                event.preventDefault(); // Blokujemy wysłanie formularza
+                alert("Proszę wybrać datę i godzinę wizyty!"); // Wyświetlamy komunikat
+            }
+            else
+            {
+                alert('Dodano nową wizytę!');
+            }
+
+        });
+
+        const userId = [[${loggedUserId}]];
+        // Inicjalizacja blokady dni dla bieżącego roku
+        const currentYear = new Date().getFullYear();
+        updateDisabledDates(flatpickrInstance, userId, currentYear);
+    });
+</script>
+<script>
+    setTimeout(function() {
+        window.location.href = '/logout';
+    }, 300000); // Wylogowanie za 5 minut
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js"></script>
+</body>
+</html>
