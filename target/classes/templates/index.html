@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" href="/static/logo.png" type="image/png">
+    <meta name="theme-color" content="#6200EE">
     <title>Strona główna</title>
     <style>
 
@@ -178,6 +181,13 @@
     setTimeout(function() {
         window.location.href = '/logout';
     }, 300000); // Wylogowanie za 5 minut
+</script>
+<script>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/service-worker.js')
+            .then(reg => console.log('Service Worker zarejestrowany!', reg))
+            .catch(err => console.log('Błąd rejestracji Service Workera:', err));
+    }
 </script>
 </body>
 </html>
