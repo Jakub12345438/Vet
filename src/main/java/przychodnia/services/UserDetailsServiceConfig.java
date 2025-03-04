@@ -1,16 +1,16 @@
-package przychodnia.configuration;
+package przychodnia.services;
 
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import przychodnia.models.UserModel;
 import przychodnia.repositories.UserRepository;
 import org.springframework.security.core.userdetails.User;
 
 
-@Component
+@Service
 @AllArgsConstructor
 public class UserDetailsServiceConfig implements UserDetailsService {
 

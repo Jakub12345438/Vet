@@ -3,7 +3,7 @@ package przychodnia.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import przychodnia.models.Role;
 import przychodnia.models.UserModel;
 import przychodnia.repositories.RoleRepository;
@@ -11,7 +11,7 @@ import przychodnia.repositories.UserRepository;
 
 import java.util.Arrays;
 
-@Component
+@Service
 public class DataInitializer implements CommandLineRunner {
 
     private final UserRepository userRepository;
