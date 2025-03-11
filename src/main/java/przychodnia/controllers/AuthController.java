@@ -25,7 +25,7 @@ public class AuthController {
         return "RegistrationView";
     }
 
-    @PostMapping("/register/save")
+    @PostMapping("/register/add")
     public String registration(@Valid @ModelAttribute("user") UserDto userDto,
                                BindingResult result,
                                Model model) {
