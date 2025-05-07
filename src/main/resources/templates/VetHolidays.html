@@ -113,6 +113,11 @@
       },
       titleFormat: 'D MMMM YYYY',
       columnHeaderFormat: 'dddd, DD.MM',
+      dayRender: function (date, cell) {
+        if (date.day() === 0) {
+          cell.css("background-color", "#ffe6e6");
+        }
+      },
       // Pobieranie eventów dynamicznie na podstawie zakresu widocznego w kalendarzu
       events: function (start, end, timezone, callback) {
         // Wyciąganie roku z widoku kalendarza
